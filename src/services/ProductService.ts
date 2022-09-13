@@ -26,11 +26,21 @@ export class ProductService {
     }
   }
 
-  async create(data: any) {
+  async create(data: {
+    image: string;
+    name: string;
+    price: number;
+    isBlocked?: boolean;
+  }) {
+    const { image, name } = data;
+    const price = '$'.concat(data.price.toString());
+    const isBlocked = data.isBlocked ? data.isBlocked : false;
     const newProduct: Product = {
       id: faker.datatype.uuid(),
-      ...data,
-      isBlocked: false,
+      image,
+      name,
+      price,
+      isBlocked,
     };
     this.products.push(newProduct);
     return newProduct;
