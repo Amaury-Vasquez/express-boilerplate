@@ -11,8 +11,7 @@ const isBlocked = joi.bool();
 
 export class ProductSchemas {
   createOne = joi.object({
-    id: id.required(),
-    imageUrl: imageUrl.required(),
+    image: imageUrl.required(),
     name: name.required(),
     price: price.required(),
     isBlocked: isBlocked.optional(),
@@ -25,7 +24,7 @@ export class ProductSchemas {
   updateOne = joi.object({
     name: name,
     price: price,
-    imageUrl: imageUrl,
+    image: imageUrl,
     isBlocked: isBlocked,
   });
 }
