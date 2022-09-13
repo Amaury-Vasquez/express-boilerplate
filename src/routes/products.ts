@@ -8,14 +8,19 @@ const router = express.Router();
 
 const service = new ProductService();
 
-const { getOne } = new ProductSchemas();
+const { createOne, getOne, updateOne } = new ProductSchemas();
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-  const data = await service.findAll();
-  res.status(200).send({
-    data,
-    message: 'Product list',
-  });
+  try {
+    await service.findAll().then((data) =>
+      res.status(200).json({
+        data,
+        message: 'Product list',
+      })
+    );
+  } catch (e) {
+    next(e);
+  }
 });
 
 router.get(
@@ -24,8 +29,39 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const product = await service.findOne(id);
-      res.status(200).json(product);
+      await service
+        .findOne(id)
+        .then((product) => res.status(200).json(product));
+    } catch (e) {
+      next(e);
+    }
+  }
+);
+
+router.post(
+  '/',
+  validationHandler(createOne, 'body'),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { body } = req;
+      await service
+        .create(body)
+        .then((newProduct) => res.status(201).json(newProduct));
+    } catch (e) {
+      next(e);
+    }
+  }
+);
+
+router.delete(
+  '/:id',
+  validationHandler(getOne, 'params'),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      await service
+        .deleteOne(id)
+        .then((deletedId) => res.status(200).json(deletedId));
     } catch (e) {
       next(e);
     }
