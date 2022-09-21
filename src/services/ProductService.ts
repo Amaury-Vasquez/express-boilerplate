@@ -43,7 +43,7 @@ export class ProductService {
       isBlocked,
     };
     this.products.push(newProduct);
-    return newProduct;
+    return { id: newProduct.id };
   }
 
   async findAll() {
@@ -57,12 +57,13 @@ export class ProductService {
     return product;
   }
 
-  async update(id: string, changes: any) {
+  async updateOne(id: string, changes: any) {
     const index = this.products.findIndex((item) => item.id === id);
     if (index === -1) throw boom.notFound(this.notFoundMessage);
     if (this.products[index].isBlocked)
       throw boom.conflict(this.blockedMessage);
     const product = this.products[index];
+    if (changes.price) changes.price = '$'.concat(changes.price);
     this.products[index] = {
       ...product,
       ...changes,

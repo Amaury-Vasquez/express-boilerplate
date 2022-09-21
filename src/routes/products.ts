@@ -68,4 +68,22 @@ router.delete(
   }
 );
 
+router.patch(
+  '/:id',
+  validationHandler(getOne, 'params'),
+  validationHandler(updateOne, 'body'),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { body, params } = req;
+      const { id } = params;
+
+      await service
+        .updateOne(id, body)
+        .then((updatedProduct) => res.status(200).json(updatedProduct));
+    } catch (e) {
+      next(e);
+    }
+  }
+);
+
 export default router;
